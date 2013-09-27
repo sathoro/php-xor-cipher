@@ -7,6 +7,7 @@ $key = "gZK4jJDN";
 
 $xor = new XORCipher();
 
+
 /* applies a XOR cipher cyclically across the plaintext with the given key */
 $cipher = $xor->cipher($plaintext, $key);
 

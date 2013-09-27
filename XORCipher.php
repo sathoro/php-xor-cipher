@@ -1,41 +1,45 @@
 <?php
 
 class XORCipher {
+
 	public function cipher($plaintext, $key) {
-		$key = (is_array($key)) ? $key : $this->text2ascii($key);
+		$key = $this->text2ascii($key);
+		$plaintext = $this->text2ascii($plaintext);
+
 		$keysize = count($key);
-		$cipher = array();
-		$i = -1;
+		$input_size = count($plaintext);
+
+		$cipher = "";
 		
-		foreach(str_split($plaintext) as $char)
-			$cipher[] = ord($char) ^ $key[$i = ++$i % $keysize];
+		for ($i = 0; $i < $input_size; $i++)
+			$cipher .= chr($plaintext[$i] ^ $key[$i % $keysize]);
 
 		return $cipher;
 	}
 
 	public function crack($cipher, $keysize) {
-		$cipher = (!is_array($cipher)) ? $this->text2ascii($cipher) : $cipher;
-		$occurences = $key = $plaintext = array();
-		$i = -1;
+		$cipher = $this->text2ascii($cipher);
+		$occurences = $key = array();
+		$input_size = count($cipher);
 
-		foreach($cipher as $char) {
-			$i = ++$i % $keysize;
-
-			if (++$occurences[$i][$char] > $occurences[$i][$key[$i]])
-				$key[$i] = $char;
+		for ($i = 0; $i < $input_size; $i++) {
+			$j = $i % $keysize;
+			if (++$occurences[$j][$cipher[$i]] > $occurences[$j][$key[$j]])
+				$key[$j] = $cipher[$i];
 		}
 
 		return $this->ascii2text(array_map(function($v) { return $v ^ 32; }, $key));
 	}
 
 	public function plaintext($cipher, $key) {
-		$key = (is_array($key)) ? $key : $this->text2ascii($key);
+		$key = $this->text2ascii($key);
+		$cipher = $this->text2ascii($cipher);
 		$keysize = count($key);
+		$input_size = count($cipher);
 		$plaintext = "";
-		$i = -1;
-
-		foreach($cipher as $char)
-			$plaintext .= chr($char ^ $key[$i = ++$i % $keysize]);
+		
+		for ($i = 0; $i < $input_size; $i++)
+			$plaintext .= chr($cipher[$i] ^ $key[$i % $keysize]);
 
 		return $plaintext;
 	}
